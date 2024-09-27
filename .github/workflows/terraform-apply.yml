@@ -1,0 +1,55 @@
+name: Terraform Apply and Store Output
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: sa-east-1
+  CLUSTER_NAME: tech-challenge-cognito
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v2
+
+      - name: Configurar AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+          
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.7.0
+
+      - name: Inicializar Terraform
+        run: terraform init -upgrade
+
+      - name: Formatar arquivos de configuração
+        run: terraform fmt -check
+
+      - name: Validar arquivos de configuração
+        run: terraform validate
+
+      - name: Planejar infraestrutura
+        run: terraform plan
+
+      - name: Aplicar infraestrutura
+        run: terraform apply -auto-approve -input=false
+
+      - name: Capturar output do Terraform
+        id: terraform_output
+        run: |
+          API_URL=$(terraform output -raw api_url)
+          echo "API_URL=$API_URL" >> $GITHUB_OUTPUT
+
+      - name: Armazenar output no AWS Secrets Manager
+        run: |
+          aws secretsmanager create-secret --name "tech-challenge-cognito-api-url" --description "API URL for Cognito Authentication" --secret-string "${{ steps.terraform_output.outputs.API_URL }}" --region ${{ env.AWS_REGION }} || aws secretsmanager update-secret --secret-id "tech-challenge-cognito-api-url" --secret-string "${{ steps.terraform_output.outputs.API_URL }}" --region ${{ env.AWS_REGION }}
