@@ -143,9 +143,6 @@ Esse workflow é acionado automaticamente sempre que uma pull request é aberta 
 
 Este workflow é acionado em qualquer push na branch `main` e executa as seguintes etapas:
 
-
-
-
 - **Checkout do repositório**: Clona o repositório para a execução do pipeline.
 - **Configuração da AWS CLI**: Autentica a AWS CLI usando as credenciais fornecidas nos secrets.
 - **Setup Terraform**: Configura o ambiente com a versão especificada do Terraform.
