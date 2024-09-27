@@ -43,12 +43,16 @@ jobs:
 
       - name: Aplicar infraestrutura
         run: terraform apply -auto-approve -input=false
-
+        
+      - name: Debug Terraform Output
+        run: terraform output
+        
       - name: Capturar output do Terraform
         id: terraform_output
         run: |
-          API_URL=$(terraform output -raw api_url)
+          API_URL=$(terraform output -raw api_url | tr -d '\n' | sed 's/::debug::Terraform exited with code 0.//')
           echo "API_URL=$API_URL" >> $GITHUB_OUTPUT
+
 
       - name: Armazenar output no AWS Secrets Manager
         run: |
