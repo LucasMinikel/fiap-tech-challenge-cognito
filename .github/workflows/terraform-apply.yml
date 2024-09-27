@@ -51,7 +51,8 @@ jobs:
         id: terraform_output
         run: |
           RAW_OUTPUT=$(terraform output -raw api_url)
-          API_URL=$(echo "$RAW_OUTPUT" | grep -o 'https://[^"]*')
+          API_URL_RAW=$(terraform output -raw api_url | tr -d '\n' | sed 's/::debug::.*$//')
+          API_URL=$(echo "$API_URL_RAW" | grep -o 'https://[^"]*')
           echo "API_URL=$API_URL" >> $GITHUB_OUTPUT
 
       - name: Debug API URL
