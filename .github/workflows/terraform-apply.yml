@@ -50,12 +50,14 @@ jobs:
       - name: Capturar output do Terraform
         id: terraform_output
         run: |
-          API_URL=$(terraform output -raw api_url | tr -d '\n' | sed 's/::debug::.*$//')
+          RAW_OUTPUT=$(terraform output -raw api_url)
+          API_URL=$(echo "$RAW_OUTPUT" | sed -n 's/.*$$https:\/\/[^[:space:]]*$$.*/\1/p')
           echo "API_URL=$API_URL" >> $GITHUB_OUTPUT
 
       - name: Debug API URL
         run: |
-          echo "API URL capturada: ${{ steps.terraform_output.outputs.API_URL }}"
+          echo "Raw Terraform output: $RAW_OUTPUT"
+          echo "Extracted API URL: ${{ steps.terraform_output.outputs.API_URL }}"
 
       - name: Armazenar output no AWS Secrets Manager
         run: |
