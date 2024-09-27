@@ -1,10 +1,9 @@
 resource "aws_cognito_user_pool" "cpf_auth_pool" {
   name = "${var.project_name}-user-pool"
 
-  schema {
-    name                = "custom:cpf"
-    attribute_data_type = "String"
-    mutable             = true
-    required            = false
+  alias_attributes = ["preferred_username"]
+
+  admin_create_user_config {
+    allow_admin_create_user_only = true
   }
 }

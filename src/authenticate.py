@@ -40,7 +40,7 @@ def handler(event, context):
                 Username=cpf,
                 UserAttributes=[
                     {
-                        'Name': 'custom:cpf',
+                        'Name': 'preferred_username',
                         'Value': cpf
                     }
                 ],
