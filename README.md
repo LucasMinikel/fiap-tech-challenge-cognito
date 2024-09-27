@@ -161,3 +161,25 @@ Este workflow é acionado manualmente (via `workflow_dispatch`) e é responsáve
 - **Inicializar Terraform**: Inicializa o backend para preparar a destruição dos recursos.
 - **Destruir Infraestrutura**: Executa `terraform destroy` para remover os recursos provisionados.
 - **Remover Segredo do Secrets Manager**: Exclui o segredo armazenado no AWS Secrets Manager.
+
+---
+
+## Utilização da URL da API
+
+Após a criação da infraestrutura, você pode utilizar a URL da API gerada pelo Terraform para interagir com os serviços provisionados. Abaixo está um exemplo de como realizar uma requisição POST, passando um CPF no corpo da requisição.
+
+### Requisição POST
+
+1. **Obtenha a URL da API**: Você pode encontrar a URL da API no AWS Secrets Manager ou no output gerado pelo Terraform após a execução bem-sucedida do `terraform apply`.
+
+2. **Exemplo de Requisição**:
+
+Você pode usar ferramentas como `curl`, Postman, ou mesmo uma biblioteca de HTTP em uma linguagem de programação de sua escolha para fazer a requisição. Abaixo está um exemplo usando `curl`:
+
+```bash
+curl -X POST <api_url> \
+-H "Content-Type: application/json" \
+-d '{
+    "cpf": "123.456.789-09"
+}'
+```
