@@ -44,9 +44,6 @@ jobs:
       - name: Aplicar infraestrutura
         run: terraform apply -auto-approve -input=false
         
-      - name: Debug Terraform Output
-        run: terraform output
-        
       - name: Capturar output do Terraform
         id: terraform_output
         run: |
@@ -63,3 +60,6 @@ jobs:
       - name: Armazenar output no AWS Secrets Manager
         run: |
           aws secretsmanager create-secret --name "tech-challenge-cognito-api-url" --description "API URL for Cognito Authentication" --secret-string "${{ steps.terraform_output.outputs.API_URL }}" --region ${{ env.AWS_REGION }} || aws secretsmanager update-secret --secret-id "tech-challenge-cognito-api-url" --secret-string "${{ steps.terraform_output.outputs.API_URL }}" --region ${{ env.AWS_REGION }}
+
+      - name: Debug Terraform Output
+        run: terraform output
