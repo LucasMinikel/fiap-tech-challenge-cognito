@@ -1,6 +1,6 @@
 module "cognito" {
-  source               = "./modules/cognito"
-  project_name         = local.project_name
+  source       = "./modules/cognito"
+  project_name = local.project_name
 }
 
 module "lambda" {
